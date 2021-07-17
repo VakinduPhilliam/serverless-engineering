@@ -157,11 +157,16 @@ The API you call will look something like below;
 
 The API Parameter Definitions:
 
-> "page" - the current number of the page fetched,
-> "currency"- the crypto transaction currency,
-> "country"- the country transaction took place,
-> "limit" - the number of items per page,
-> "search" - the topic (usually name of the customer) search for,
+> "page" - the current number of the page fetched.
+
+> "currency"- the crypto transaction currency.
+
+> "country"- the country transaction took place.
+
+> "limit" - the number of items per page.
+
+> "search" - the topic (usually name of the customer) search for.
+
 > "transactions" - the actual transactions list.
 
 
