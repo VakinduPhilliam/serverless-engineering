@@ -41,8 +41,8 @@ GET/ -  dev/transactions?cur=BTC&cc=BW&lm=10&s=Vakindu&pg=1
 
 Parameter definitions:
 
-> "cur" - crypto currency type. Eligible currency codes: "ETH", "BTC", "LTC", "USDT" 
-> "cc" - country code. Eligible codes: "US", "NG", "SA", "BW", "GH
+> "cur" - crypto currency type. Eligible currency codes: "ETH", "BTC", "LTC", "USDT". 
+> "cc" - country code. Eligible codes: "US", "NG", "SA", "BW", "GH.
 > "lm" - page size limit. Integer only. Setting it to '10' means you want only 10 results per page.
 > "s" - customer Name. String text only.
 > "pg" - page number. Integer only.
