@@ -1,0 +1,115 @@
+service: dynamo
+useDotenv: true
+configValidationMode: warn
+frameworkVersion: ^2.52.0
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+
+custom:
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+    seed:
+      dev:
+        sources:
+          - table: transactions
+            sources: [./txs.json]
+  bundle:
+    linting: false
+  
+functions:
+  GetPaginatedTransactions:
+    handler: handler.GetPaginatedTransactions
+    events:
+      - http:
+          path: transactions
+          method: get
+          cors: true
+          request:
+            template:
+              application/json: >
+                {
+                  "cur" : "$input.params('cur')",
+                  "cc": "$input.params('cc')",
+                  "lm": "$input.params('lm')",
+                  "s": "$input.params('s')",
+                  "pg": "$input.params('pg')"
+                }
+  UserInterface:
+    handler: handler.UserInterface
+    events:
+      - http:
+          path: ui
+          method: get
+          cors: true
+          request:
+            template:
+              application/json: >
+                {
+                  "cur" : "$input.params('cur')",
+                  "cc": "$input.params('cc')",
+                  "lm": "$input.params('lm')",
+                  "s": "$input.params('s')",
+                  "pg": "$input.params('pg')"
+                }
+
+resources:
+  Resources:
+    transactionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: transactions
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: country
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH  
+          - AttributeName: createdAt
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        LocalSecondaryIndexes:
+        - IndexName: id_index
+          KeySchema: 
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: country
+            KeyType: RANGE
+          Projection: 
+            ProjectionType: ALL
+        GlobalSecondaryIndexes:
+          - IndexName: country_created_at_index
+            KeySchema:
+              - AttributeName: country
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-bundle
