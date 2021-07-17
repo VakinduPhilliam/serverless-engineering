@@ -170,4 +170,3 @@ next_page = page+1
 previous_page = page-1
 
 A page count starts at 1 (a page cannot be 0). Therefore make sure to have an exception for the first page while creating navigation. 
-
